@@ -1,0 +1,11 @@
+Source: redsibd
+Section: user/Multimedia
+Priority: optional
+Maintainer: Francesco Morandi <francescomorandi84@libero.it>
+Build-Depends: 
+Standards-Version: 0.3.12
+
+Package: redsibd
+Architecture: any
+Depends: libwhiteboard (>= 2.3 ), libwhiteboard-dev (>= 2.3 ), whiteboard (>= 2.0), whiteboard-sib-access (>= 2.0)
+Description: Redland SIB daemon.

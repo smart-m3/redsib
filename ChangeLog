@@ -1,0 +1,623 @@
+2007-09-30  Jukka Alasalmi <jukka.alasalmi@nokia.com>
+  * Tagged (probably) last Osso 1.0 version
+
+2007-09-19  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Removed pcsink_playlist_to_first() and _to_last() because
+    of their vague purpose. They were unused anyway.
+  * Unit tests for PCSink continued.
+  * Fixed initial sink->playlist_at setting to -1 if playlist is empty
+	
+2007-09-19  Visa Smolander <visa.smolander@nokia.com>
+  * Added some mediahub_browse unit tests
+
+2007-09-19  Visa Smolander <visa.smolander@nokia.com>
+  * Modified browsesource refcount functions to return the refcount
+  * Added browsesource unit tests
+
+2007-09-14  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Created a couple of test cases for pcsink
+  * Fixed initial playlist_at setting in pcsink.
+
+2007-09-13  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Separated playlist unit tests into logical test case groups
+  * Created test for playlist item
+
+2007-09-13  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Removed shuffle & repeat vars from playlist struct because they are
+    handled in pcsink.
+  * Added current refcount returns to playlist_ref and _unref
+  * Added unit_tests directory and created Makefile rules for "check".
+  * Added check_playlist.c to unit_tests.
+
+2007-09-04  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Fixed excess delay in discovery process, which resulted from
+    mis-routed return message within the session bus.
+
+2007-09-04  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Fixed compiler warnings
+
+2007-09-04  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Fixed a typo in last commit.
+
+2007-09-04  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Each PCSink's user_stop member is now initialized as TRUE during
+    construction. This is probably one of biggest reasons why
+    two mediahubs couldn't coexist in the same network without
+    going wacko. In other words, each sink used to start in such
+    a mode that the first received EOS signal was interpreted as
+    if the sink was already playing something. Now its the opposite.
+
+2007-09-03  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added timestamp configure option.
+
+2007-08-30  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Changed mediahub_metadata to use MediaHubCmd.
+
+2007-08-28  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Implemented custom command method return scheme
+
+2007-08-28  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Method return packet routing finished + cleanups.
+
+2007-08-28  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Almost completed MediaHubCmd -- waiting for final method return scheme
+  * Moved general mediahub packet handling into its own handler function
+  * Moved custom command handling to its own handler functions
+
+2007-08-27  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Return message routing now done via sender/destination header fields.
+
+2007-08-24  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Serial hashmap was not updated for get volume, fixing...
+
+2007-08-21  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added content update signalling to sources.
+  * Added some custom command drafts, nothing tangible yet, though.
+
+2007-08-17  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Return message routing implemented
+
+2007-08-13  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added two prototypes from MediaHub Library private API to
+    mediahub_browse.c.
+
+2007-08-10  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Removed some forgotten fprintfs.
+  * Changed a debug message to warning in a NULL key/value
+    check in metadata request.
+
+2007-08-10  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Implemented the new metadata scheme for MediaHubUI as well.
+
+2007-08-09  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Implemented a more dynamic way of getting metadata.
+    MediaHubUI is not yet supporting it, though...
+  * Moved MediaHubMediaClass and MediaHubPlayState enums from
+    mediahub_util.h to mediahub_metadata.h
+
+2007-08-03  Jukka Alasalmi <jukka.alasalmi@nokia.com>
+  * Removed unnecessary libosso.h include from src/main.c
+
+2007-08-03  Visa Smolander <visa.smolander@nokia.com>
+  * Removed select sink from all other playcontrol methods except
+    select_sink
+
+2007-08-03  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed shuffle and repeat sync method handlers. Now they can be used...
+
+2007-06-21  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * refresh -> async naming change
+
+2007-06-15  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Week 24 release.
+
+2007-06-12  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Implemented item moving instead of swapping
+
+2007-06-08  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Shuffle didn't go on if playlist was empty. Fixed.
+
+2007-06-07  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Renamed *_get_content and *_get_content_cancel to *_browse and
+    *_browse_cancel, since metadata action can also be cancelled.
+
+2007-06-06  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Week 23 release.
+
+2007-06-05  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * UI's get notified of an inserted item (to playlist) before the data
+    is sent to sinks because it would cause confusion in UI's when
+    they receive signals from sinks that tell about changed media that
+    doesn't seem to be present in the playlist.
+    This was yet another attempt to fix bug#1094.
+
+2007-06-02  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Removed some leftover printf's.
+
+2007-06-02  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Fixed the damn shuffle.
+
+2007-06-01  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Shuffle almost works. The only problem is now that not all items are
+    played in shuffle mode, but individual items can be selected
+    correctly.
+
+2007-06-01  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Fixed a very nasty crash problem with removed sources by removing
+    the connection pointers from dbushandler's lists and maps.
+    This is possibly a fix to bug#1167: Application jammed when
+    WLAN is disconnected
+
+2007-05-31  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Changed debug levels from old zenit-specific definitions to
+    more generic user levels and mediahub-specific levels.
+
+2007-05-30  Visa Smolander <visa.smolander@nokia.com>
+  * Release 0.6.0
+
+2007-05-29  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Updated debian package creation from mcd to mediahub
+  * Added libmediahub dependency to debian/control
+
+2007-05-29  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Changed libexec path to $(libdir)/mediahub/libexec
+
+2007-05-29  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Renamed the whole thing from MCD* to MediaHub*
+
+2007-05-28  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Fixed memoryleaks reported by valgrind.
+
+2007-05-25  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Changed vostokcommon to mcd in mcd.service.in
+
+2007-05-25  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Migrated common to use libmcd.
+  * Changed the vostokcommon to mcd.
+
+2007-05-23  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added user_stop parameter to pcsink struct to indicate the situation
+    when the user has pressed stop (i.e. force stop)
+
+2007-05-23  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Updated version numbers.
+
+2007-05-23  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Sinks & sources are now informed about common (re)start. 
+    (Bug #1226)
+
+2007-05-23  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Fixed playlist unreferencing for pcsink.
+
+2007-05-23  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Rewrote playlist_ref & unref to prevent LGPL violation
+
+2007-05-23  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Unified sink & source registration to contain always uuid, name,
+    mimetypes, local parameters, in that order. Sources don't use
+    mimetypes, so the parameter is not sent to UI's.
+  * PCSink saves its local status in pcsink_new()
+  * PCSink saves its mimetypes as a gchar* in pcsink_new()
+
+2007-05-22  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added local status to sink&source registration routines.
+  * TODO: mcdsource registration doesn't handle the local status
+    parameter, nor pass it forwards to UI.
+
+2007-05-21  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Using direct "pointer" compare instead of integer compare in
+    hash tables.
+  * Fixed memory leak from connection hash table.
+
+2007-05-21  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Updated version numbers.
+
+2007-05-21  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Fixed bug#1110. Now setting shuffle state also sets repeat state.
+
+2007-05-21  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added local status to sink & sink inserted calls
+  * PCSink checks if it is already fetching metadata so it won't do it twice.
+  * SciTE decided to automatically strip trailing spaces from all lines...
+
+2007-05-18  Visa Smolander <visa.smolander@nokia.com>
+  * Added select_sink support
+
+2007-05-16  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Changed metadata get/send scheme to do things asynchronously
+  * Moved playcontrol_get_metadata to pcsink_get_metadata()
+  * H4x0r3d pcsink's metadata getter into semi-asynchronous mode;
+    pcsink takes care of running the main loop while it waits for the metadata
+
+2007-05-15  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Changed naming class -> media_class for c++ compiler compatibility.
+
+2007-05-15  Visa Smolander <visa.smolander@nokia.com>
+  * Added playcontrol_goto method support
+
+2007-05-10  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Added missing list termination mark into discovery routine.
+
+2007-05-09  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Updated release numbers and debian changelog
+
+2007-05-08  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Fixed discovery by providing service description file
+    for mcd and handling session bus connection correctly.
+
+2007-05-08  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed the double play sending problem when pressing 
+    next and prev while playing
+
+2007-05-08  Visa Smolander <visa.smolander@nokia.com>
+  * Added list of sources to mcdbrowse
+  * Added get_sources support
+  * Fixed source_removed handling
+  * Modified "::" browsing so that common responds with source list
+    (instead of forwarding the request to sources)
+
+2007-05-04  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Removed browse_ext_metadata
+  * Added DIDL-Lite to metadata calls.
+
+2007-05-04  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Changed PCSink, PlayControl and Playlist structs opaque and
+    made adjustments to reflect the change.
+
+2007-05-03  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Rewrote pcsink_ref & unref to prevent LGPL violation
+
+2007-05-03  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Fixed a crash problem that occurred when MCD was killed while
+    there were sinks still present. playcontrol_destroy() was called
+    after mcddbus_destroy() which resulted in corrupted memory etc.
+  * Added mcdlog_debug_fb()'s to mcddbus.c
+
+2007-05-03  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Removed playcontrol_lock/unlock() and the associated GMutex.
+  * Added playcontrol_playlist_add/remove() functions that lack
+    some essential functionality pending multiple lplaylist suport.
+  * Renamed playcontrol_create_cb() to playcontrol_playlist_create_cb()
+  * Renamed playcontrol_destroy_cb() to playcontrol_playlist_destroy_cb()
+
+2007-05-03  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Debian changelog and configure.ac updated based on last release.
+
+2007-05-03  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Removed pcsink_lock & unlock as well as the mutex because
+    they are not needed.
+
+2007-05-03  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Moved mcd_signalled inside mcd_signal_handler
+  * Added g_type_init() to main().
+
+2007-05-02  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added mcdlog_debug_[fb|fe]()'s to all mcdbrowse functions.
+
+2007-05-02  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added correct handling of sink unregister signals (should fix #1130)
+  * Fixed crash problem in pcsink.c when there are no sinks available.
+  * Changed MCD_PLAYLIST debug filters to MCD_PLAYCONTROL in playcontrol.c
+  * Added mcdlog_debug_[fb|fe]() to all functions in playcontrol.c
+
+2007-04-30  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Fixed bug 1106: Repeat mode is on as default.
+
+2007-04-30  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed bug 1102: deleting current item from playlist...
+
+2007-04-30  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Removed browse id association with source connections when
+    browsing special "root container".
+  * Added debug messages.
+
+2007-04-25  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Changed browse ids to not use dynamic memory.
+
+2007-04-25  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed browse id association to connections 
+    (don't know why it works, though...)
+
+2007-04-25  Visa Smolander <visa.smolander@nokia.com>
+  * Added error log messages
+
+2007-04-25  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Log message signals are now multiplexed into UI connections.
+
+2007-04-24  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed browse cancel functionality
+
+2007-04-24  Visa Smolander <visa.smolander@nokia.com>
+  * Modified all browse_id:s to int (from uint)
+  * Fixed broken browsing
+
+2007-04-24  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * File name changes: vostok_ui.h->mcdui.h vostok_source.h->mcdsource.h
+
+2007-04-24  Visa Smolander <visa.smolander@nokia.com>
+  * Added support for browse_cancel.
+	
+2007-04-23  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Changed browse id handling to use hash maps instead of
+    spesific structs and lists.
+
+2007-04-17  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Removed signal now passed to UI's
+
+2007-04-17  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * More control channel code.
+
+2007-04-16  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Control channel framework + small fixes.
+
+2007-04-16  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed playlist index signaling in case of shuffle mode.
+	
+2007-04-16  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed seek (pcsink was using DOUBLE instead of INT32 in seek position)
+	
+2007-04-13  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed bugs when removing or adding items before current played 
+    item in playlist
+
+2007-04-13  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Fixed sink->id to sink->uuid in pcsink_send_index_changed.
+
+2007-04-13  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Moved playcontrol_send_current_changed() to pcsink_send_index_changed()
+  * Moved playcontrol-specific method handlers from playlist to playcontrol.
+
+2007-04-13  Visa Smolander <visa.smolander@nokia.com>
+  * Modified pcsink_playlist_goto to take care of set_media and 
+    current_changed signaling
+  * Fixed various bugs in the reworked playcontrol & pcsink
+
+2007-04-13  Visa Smolander <visa.smolander@nokia.com>
+  * Added get sinks method support
+  * A lot of fixes to get sink selection work with the new pcsink
+    logic
+
+2007-04-12  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Fixed an invalid parameter
+
+2007-04-12  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Changed most of the playcontrol's playback logic to pcsink.
+
+2007-04-12  Visa Smolander <visa.smolander@nokia.com>
+  * Released 0.1.0
+
+2007-04-11  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Enchanced logging in error situations.
+
+2007-04-11  Visa Smolander <visa.smolander@nokia.com>
+  * Added sink uuid parameter to all playcontrol and sink signals
+  * Replaced dbus_get_args function calls with mcdutil_parse_message
+
+2007-04-10  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Changed hacked XID in playcontrol_play_sink() to the real one.
+  * Fixed too long lines.
+
+2007-04-09  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed a memory leak from playcontrol (mutex free)
+
+2007-04-06  Visa Smolander <visa.smolander@nokia.com>
+  * Added support for the asynchronous playcontrol get functions
+    TODO: playcontrol.c doesn't use refresh_play_state itself, yet!
+
+2007-04-04  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added xid set & get to playcontrol
+
+2007-04-04  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Refactored playcontrol dbus handler, UIs are now signalled when
+    new sink registers.
+
+2007-04-04  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Implemented a ref/unref schema for playcontrol's sinks so that the
+    playcontrol doesn't crash if active_sink == NULL.
+
+2007-04-04  Visa Smolander <visa.smolander@nokia.com>
+  * Removed repeat one and changed repeat to gboolean
+
+2007-04-03  Visa Smolander <visa.smolander@nokia.com>
+  * Added browse complete signal handling. Now browse_ids are removed 
+    from ui connections.
+
+2007-04-03  Visa Smolander <visa.smolander@nokia.com>
+  * Updated vostok dependency
+  * Released 0.0.1
+
+2007-04-02  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * mcdutil_send_message doesn't like NULL strings, so
+    playcontrol_get_media_cb returns empty strings if get_media fails.
+
+2007-04-02  Visa Smolander <visa.smolander@nokia.com>
+  * Added buffering signals
+
+2007-04-01  Visa Smolander <visa.smolander@nokia.com>
+  * Added get_item method.
+  * Fixed a playlist insert indexing bug.
+
+2007-03-31  Visa Smolander <visa.smolander@nokia.com>
+  * Added clear media calls to playlist clear and remove
+
+2007-03-31  Visa Smolander <visa.smolander@nokia.com>
+  * Added support for get_media and get_current_index
+    to playcontrol
+
+2007-03-31  Visa Smolander <visa.smolander@nokia.com>
+  * Moved all playlist dbus handling to playcontrol.c
+  * Fixed current item index handling in remove and add to 
+    playlist cases
+  * Fixed first item insertoin: now playcontrol sets it as the 
+    current item and signals it
+  * Fixed current item removal and clear all: now it stops playback
+
+2007-03-30  Visa Smolander <visa.smolander@nokia.com>
+  * Changed play implementation to use the new set_media 
+    and play methods
+  * Added support for set_media in next, prev and end-of-stream
+
+2007-03-30  Visa Smolander <visa.smolander@nokia.com>
+  * Added end-of-stream handling to playcontrol
+
+2007-03-29  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Added two missing function prototype definitions for
+    mcdbrowse_destroy and playlist_destroy.
+
+2007-03-29  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed next/prev
+  * Added utility function playlist_set_current
+
+2007-03-29  Visa Smolander <visa.smolander@nokia.com>
+  * Added playlist current changed signal
+
+2007-03-29  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Common shutdown is now possible with ^C (or kill -15)
+
+2007-03-28  Visa Smolander <visa.smolander@nokia.com>
+  * Added handlers for playcontrol signals (mute, media, volume, state)
+
+2007-03-28  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Replaced mcdbrowse_get_source_uuid() with mcdutil_objectid_split()
+  * Replaced source services sending with a list implementation
+
+2007-03-28  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Child spawning and one memoryleak fixed.
+
+2007-03-28  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Changed child spawn call to use run-standalone.sh,
+    browse id is now freed right after it has been appended
+    to browse message.
+
+2007-03-27  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Removed the aforementioned g_free's completely, because they should
+    not be called. Also added comments telling why this is the case.
+
+2007-03-27  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Commented some g_free's from play (FIX!!)
+
+2007-03-27  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added metadata & extended metadata dispatchers to mcdbrowse.c
+
+2007-03-27  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Changed most of mallocs to g_new0s
+
+2007-03-27  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Initial process management framework: currently starts
+    sources sinks when common starts.
+
+2007-03-26  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Playcontrol is now evented when sink registers itself
+
+2007-03-26  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Moved PlaylistRepeatStatus to MCDRepeat in mcdutil.h
+
+2007-03-26  Visa Smolander <visa.smolander@nokia.com>
+  * Added support for "add to playlist end" with index -1 
+
+2007-03-23  Visa Smolander <visa.smolander@nokia.com>
+  * Added playlist shuffle and repeat get/set 
+
+2007-03-23  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Browse id changed to correct type.
+
+2007-03-23  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Debianization
+
+2007-03-23  Visa Smolander <visa.smolander@nokia.com>
+  * Finalized playlist_get_items implementation
+
+2007-03-23  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed a bug in playlist remove item
+  * Started playlist_get_items implementation
+  * Reorganized objectid, title, ... etc. parameter orders
+
+2007-03-23  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Bug with source uuid parsing and one with browse id memory
+    (de)allocation fixed.
+
+2007-03-23  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added class to item insertion functions.
+
+2007-03-23  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * GLib typedef and macros used more + compiler warnings
+    resolved.
+
+2007-03-23  Visa Smolander <visa.smolander@nokia.com>
+  * Added mcddbus context to playlist
+  * Added item_inserted and cleared signal implementation
+  * Fixed a bug in playlist_clear
+
+2007-03-22  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Few new api methods for mcddbus and a bunch of fixes,
+    e.g. browsing works now.
+
+2007-03-22  Visa Smolander <visa.smolander@nokia.com>
+  * Fixed playlist get_size and insert_at playlist. Now 
+    they maybe work
+
+2007-03-22  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Implemented all secondary methods for playcontrol.
+
+2007-03-22  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * All DBus connections are now referenced by dbushandler
+
+2007-03-22  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Dbus handler modified to handle sink registrations
+
+2007-03-22  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Implemented basic functionality for playcontrol.
+
+2007-03-22  Visa Smolander <visa.smolander@nokia.com>
+  * Removed mutexes from playlist
+  * Changed MCD_DEBUG define to configure
+
+2007-03-21  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * PlayControl cont'd
+
+2007-03-21  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Indent run with: -bl -bls -i8 -l80 -sai -saw 
+    -saf -ts8 -ut -bli0 -npcs
+
+2007-03-21  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * New logging interface now in use.
+
+2007-03-21  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Logger moved to vostok-lib
+
+2007-03-20  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Renamed *playback* stuff to *playcontrol* in mcddbus.c/h
+  * Fixed a bug in the play(back)control dispatcher that gave the
+    playlist userdata to the playcontrol callback.
+
+2007-03-20  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * PlayControl is now created
+  * Added Nokia headers to source files
+
+2007-03-19  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Simple draft for playback control
+  * Took pkgconfig into use with vostok-lib
+
+2007-03-19  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Lots of miscellaneous updates and fixes.
+
+2007-03-09  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Initial routing for signals from source to ui.
+
+2007-03-09  Mikael Saarenpaa <ext-mikael.saarenpaa@nokia.com>
+  * Added initial versions of dbus handler, browse component
+    and rough logging component.
+
+2007-03-08  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Removed some signals from playlist that should be sent by the
+    playback management module instead.
+  * Renamed some methods to make them more understandable.
+
+2007-03-07  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added at_first() and at_last() functions.
+
+2007-03-07  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Added ignore_repeat parameter to playlist_step().
+
+2007-03-06  Heikki Junnila <ext-heikki.junnila@nokia.com>
+  * Created vostok-common project in SVN
