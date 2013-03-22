@@ -3,7 +3,7 @@ Section: user/Multimedia
 Priority: optional
 Maintainer: Francesco Morandi <francescomorandi84@libero.it>
 Build-Depends: 
-Standards-Version: 0.3.12
+Standards-Version: 0.4.1
 
 Package: redsibd
 Architecture: any

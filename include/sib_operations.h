@@ -46,11 +46,8 @@
 #include <dbus/dbus.h>
 #include <sibdefs.h>
 
-
-
-
-
 #include <redland.h>
+#include <rasqal.h>
 
 typedef unsigned short bool;
 #define true  1
@@ -80,21 +77,24 @@ typedef EncodingType triple_encoding;
 
 typedef enum {M3_SUB_ONGOING,  M3_SUB_PENDING, M3_SUB_STOPPED} sub_status;
 
-/* Struct to hold a triple using piglet's int node representation*/
-typedef struct {
-  gint s;
-  gint p;
-  gint o;
-  gint dt;
-  gchar* lang;
-} m3_triple_int;
 
-/* Struct to hold a node using piglet's int representation*/
 typedef struct {
-  gint node;
-  gint dt;
-  gchar* lang;
-} m3_node_int;
+  ssElement_t     subject,
+                  predicate,
+                  object;
+  ssElementType_t subjType, /* never: ssElement_TYPE_LIT*/
+  /* predicate type is always uri */
+                  objType;
+
+  // Additional values
+  gchar *		  subject_var;
+  gchar *		  predicate_var;
+  gchar *		  object_var;
+
+  gint gp_index;
+  gint indent;
+
+} ssTriple_t_sparql;
 
 
 typedef struct {
@@ -134,8 +134,16 @@ typedef struct {
   GSList* results;
   gint bool_results;
 
-  //ARCES
+  //UNIBO
+  gboolean* sparql_subscribe;
+  gchar* sparql_query_str;
   gboolean* first_subscribe;
+
+  GSList* added;
+  GSList* removed;
+
+  librdf_storage * substorage;
+  librdf_model * submodel;
 
   gchar* results_str;
   GSList* new_results;
@@ -173,12 +181,12 @@ typedef struct {
 
   GMutex* store_lock;
 
-  //ARCES SUBS DIFF
-  librdf_storage* RDF_storage_subscribe;
-  librdf_model* RDF_model_subscribe;
+  // SUBS DIFF
+  //librdf_storage* RDF_storage_subscribe;
+  //librdf_model* RDF_model_subscribe;
 
   GMutex* store_subscribe_lock;
-  //end ARCES SUBS DIFF
+  //end SUBs  DIFF
 
   /* List of joined KPs */
   GHashTable* joined;
@@ -196,12 +204,6 @@ typedef struct {
   GMutex* subscriptions_lock;
 
 
-  /* Lock for parser operations */
-  /* GMutex* m3_parser_lock; */
-
-  /* Lock for dbus send */
-  /* GMutex* dbus_lock; */
-
   /* Lock for waiting in init until scheduler has started */
   GMutex* scheduler_init_lock;
   GCond* scheduler_init_cond;
@@ -216,7 +218,6 @@ typedef struct {
   /* GAsyncQueue* subscribe_queue; */
 
 
-  //ARCES
   //Communication for differential RDF subscribe
   librdf_model*   RDF_model_insert;
   librdf_storage* RDF_storage_insert;
@@ -228,19 +229,25 @@ typedef struct {
   gboolean 	  subs_sheduler_removed_triple_with_wildcard;
 
   GMutex* temp_ins_rem_operations_lock;
-  //END ARCES  
 
-  //ARCES REASONING
+  //sparql subscribe modules
+
+  rasqal_world* sparql_preprocessing_world;
+  GMutex* sparql_preprocessing_lock;
+
+  //Reasoning
+
   GHashTable* subClasses;
   GHashTable* subProperties;
   GHashTable* propertyDomain;
   GHashTable* propertyRange;
-  //END ARCES REASONING
-
 
   //PARAMETERS
   gboolean	disable_protection;
   gboolean	enable_rdf_pp;
+  gboolean mem_volatile ;
+  gboolean sqlite ;
+  gboolean subs_persistent ;
 
 
 } sib_data_structure;

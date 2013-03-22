@@ -19,7 +19,7 @@ endif
 redsibd_LDFLAGS = @GNOME_LIBS@  @WHITEBOARD_LIBS@ @LIBSIB_LIBS@  -lgthread-2.0 -luuid -ldl  -L/usr/lib/i386-linux-gnu  /usr/local/lib/librdf.la
 
 
-AM_CFLAGS = $(redsibd_CFLAGS) -g
+AM_CFLAGS = $(redsibd4_CFLAGS) -g
 
 # Put these in alphabetical order so they are easy to find.
 # Leave main.c out of this list because it must not be present

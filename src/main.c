@@ -57,8 +57,8 @@
 #include "sib_operations.h"
 
 #define MAJOR_VERSION 	"0"
-#define MINOR_VERSION 	"3"
-#define BUILD 		"12"
+#define MINOR_VERSION 	"4"
+#define BUILD 		"1"
 
 GMainLoop *mainloop = NULL;
 SibControl *sib_control  = NULL;
@@ -89,10 +89,12 @@ int main(int argc, char **argv)
 
 	  /*AD-ARCES*/
 	  printf("/* * * * * * * * * * * * * * * * * * * * * *\\\n");
-	  printf("  Redland SIB, version %s.%s.%s\n", MAJOR_VERSION, MINOR_VERSION, BUILD);
-	  printf("  Developed By ARCES's Team from Nokia C-SIB\n");
-	  printf("  It exports SYNCHRONIZATION mechanism\n");
+	  printf("           RedSib, version %s.%s.%s\n", MAJOR_VERSION, MINOR_VERSION, BUILD);
+	  printf("     Developed by University of Bologna \n");
 	  printf("\\* * * * * * * * * * * * * * * * * * * * * */\n\n");
+
+
+
 
   //mtrace();
   gchar* ss_name;
@@ -123,11 +125,11 @@ int main(int argc, char **argv)
 			else
 			{
 				printf("\nUSAGE:\n\n");
-				printf("./redsibd [--option1] [--option2] [--option..] [ss_name]\n");
+				printf("./redsibd4 [--option1] [--option2] [--option..] [ss_name]\n");
 				printf("\n\nOPTIONS AVALIABLE:\n\n");
 				printf("--enable-rdf++			Enable RDF++ Reasoning Plugin\n\n");
 				printf("--disable-protections		Disable protections ARCES plugin\n\n");
-				printf("--storage-volatile		Disable persistent BDB and run on volatile\n");
+				printf("--storage-volatile  / --ram	Disable persistent BDB and run on volatile\n");
 				printf("--storage-sqlite		Use Sqlite as storage db (slow..)\n");
 				printf("--storage-subs-persistent	Use persistent BDB for handling subscriptions\n"); 				        printf("                                (just in case subscriptions work with high number of statements)\n\n");
 
