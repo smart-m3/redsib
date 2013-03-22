@@ -254,6 +254,9 @@ LCTable *LCT=NULL;
 
      	    ProtectionDescriptor* pd=malloc(sizeof(ProtectionDescriptor));
             pd->PiList=NULL;
+            pd->I=NULL;
+            pd->P=NULL;
+            pd->owner=NULL;
 
 
      	    while( list!=NULL )
