@@ -16,7 +16,7 @@ endif
 
 
 # Linker flags -- 25.5.2009 added libpiglet / jh
-redsibd_LDFLAGS = @GNOME_LIBS@  @WHITEBOARD_LIBS@ @LIBSIB_LIBS@  -lgthread-2.0 -luuid -ldl  -L/usr/lib/i386-linux-gnu  /usr/local/lib/librdf.la
+redsibd_LDFLAGS = @GNOME_LIBS@  @WHITEBOARD_LIBS@ @LIBSIB_LIBS@  -lgthread-2.0 -luuid -lrasqal -lraptor -ldl -L/usr/lib/i386-linux-gnu -lrdf
 
 
 AM_CFLAGS = $(redsibd4_CFLAGS) -g
