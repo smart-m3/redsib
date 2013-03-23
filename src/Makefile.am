@@ -25,6 +25,9 @@ AM_CFLAGS = $(redsibd4_CFLAGS) -g
 # Leave main.c out of this list because it must not be present
 # in the unit testing library build.
 sources = \
+	dataflow_entry_search.c \
+	dataflow_network.c \
+	dataflow_utilities.c \
 	dbushandler.c \
 	sib_control.c \
 	sib_operations.c \

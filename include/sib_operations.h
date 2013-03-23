@@ -37,7 +37,6 @@
 /*AD-ARCES
  * the LCTable implementation
  */
-#include "LCTableTools.h"
 
 
 #include "config.h"
@@ -45,6 +44,8 @@
 #include <stdlib.h>
 #include <dbus/dbus.h>
 #include <sibdefs.h>
+
+#include "LCTableTools.h"
 
 #include <redland.h>
 #include <rasqal.h>
@@ -58,12 +59,14 @@ typedef unsigned short bool;
 #define False 0
 
 
+#define wildcard1 	"sib:any"
+#define wildcard2 	"http://www.nokia.com/NRC/M3/sib#any"
 
 typedef ssStatus_t ss_status;
 
 /* Definitions for enumerated SSAP protocol values */
 
-typedef enum {M3_JOIN, M3_LEAVE, M3_INSERT, M3_REMOVE, M3_UPDATE,
+typedef enum {M3_JOIN, M3_LEAVE, M3_INSERT, M3_REMOVE, M3_UPDATE, M3_INNER_SUBSCRIBE,
    	      M3_QUERY,M3_FIRST_SUBSCRIBE ,M3_SUBSCRIBE, M3_UNSUBSCRIBE, /*AD-ARCES*/ M3_PROTECTION_FAULT} transaction_type;
 
 typedef enum {M3_REQUEST, M3_CONFIRMATION, M3_RESPONSE,
@@ -249,7 +252,16 @@ typedef struct {
   gboolean sqlite ;
   gboolean subs_persistent ;
 
+  //DATAFLOW NETWORK DATA
+  GSList* dataflow_main_agents;
+  GSList* dataflow_subst_agents;
+  GMutex* dataflow_operation_lock;
 
+  GHashTable* dataflow_inner_subs;
+  GMutex* dataflow_inner_subs_lock;
+
+  GSList* dataflow_inner_storage;
+  GMutex* dataflow_inner_storage_lock;
 } sib_data_structure;
 
 

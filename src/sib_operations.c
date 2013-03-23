@@ -23,6 +23,9 @@
 
 #include "sib_operations.h"
 #include "utilities.h"
+#include "dataflow_network.h"
+#include "dataflow_entry_search.h"
+#include "dataflow_utilities.h"
 
 #include <sys/time.h>
 #include <uuid/uuid.h>
@@ -32,8 +35,6 @@
 #define LIBRDF_PARSER_FEATURE_ERROR_COUNT 	"http://feature.librdf.org/parser-error-count"
 
 //RDF DEFINE
-#define wildcard1 	"sib:any"
-#define wildcard2 	"http://www.nokia.com/NRC/M3/sib#any"
 
 #define fn_ex 		"http://www.w3.org/2005/xpath-functions#"
 #define fn_c_1 		"fn#"
@@ -917,6 +918,10 @@ gint m3_subscribe_triples(ssap_message_header *header,
 	s->op_cond = op_cond;
 	s->op_complete = FALSE;
 
+        /* Add connection information about agent if agent ready to process data. */
+        dataflow_save_connection_info_about_agent(param->sib, header, req_msg->template_query,
+                rsp_msg, param->conn);
+
 	g_async_queue_push(param->sib->query_queue, s);
 
 	/* Signal scheduler that new operation has been added to queue */
@@ -1559,6 +1564,9 @@ gpointer m3_unsubscribe(gpointer data)
 			g_mutex_unlock(param->sib->subscriptions_lock);
 
 			rsp_msg->status = ss_StatusOK;
+                        if (header->tr_id == 1) {
+                            dataflow_try_to_substitute_broken_agent(param->sib, header->kp_id);
+                        }
 		}
 		else
 			rsp_msg->status = ss_KPErrorRequest;
@@ -2727,22 +2735,42 @@ void rdf_subscribe(scheduler_item* op, sib_data_structure* p)
 
 		////////////////////////////////////////////////////////
 		//Trigger for unsub
-		subscription_state* s;
-		g_mutex_lock(p->subscriptions_lock);
-		s = g_hash_table_lookup(p->subs, op->rsp->sub_id);
-		if (NULL != s && s->status != M3_SUB_STOPPED)
-		{
-			s->status = M3_SUB_ONGOING;
-			g_mutex_unlock(p->subscriptions_lock);
-			//whiteboard_log_debug("QUERY FOR SUBS: Set subscription %s to ongoing\n", s->sub_id); /* SUB_DEBUG */
-		}
-		else if (s->status == M3_SUB_STOPPED)
-		{
-			g_mutex_unlock(p->subscriptions_lock);
-			//printf("cleaning submodels\n");
-			librdf_free_model(op->rsp->submodel);
-			librdf_free_storage(op->rsp->substorage);
-		}
+                if (op->header->tr_type == M3_INNER_SUBSCRIBE)
+                {
+                    g_mutex_lock(p->dataflow_inner_subs_lock);
+                    dataflow_subscr_state* subscr_state =
+                            g_hash_table_lookup(p->dataflow_inner_subs, op->rsp->sub_id);
+                    if (NULL != subscr_state && subscr_state->status != M3_SUB_STOPPED)
+                    {
+                            subscr_state->status = M3_SUB_ONGOING;
+                            g_mutex_unlock(p->dataflow_inner_subs_lock);
+                    }
+                    else if (subscr_state->status == M3_SUB_STOPPED)
+                    {
+                            g_mutex_unlock(p->dataflow_inner_subs_lock);
+                            librdf_free_model(op->rsp->submodel);
+                            librdf_free_storage(op->rsp->substorage);
+                    }
+                }
+                else
+                {
+                    subscription_state* s;
+                    g_mutex_lock(p->subscriptions_lock);
+                    s = g_hash_table_lookup(p->subs, op->rsp->sub_id);
+                    if (NULL != s && s->status != M3_SUB_STOPPED)
+                    {
+                            s->status = M3_SUB_ONGOING;
+                            g_mutex_unlock(p->subscriptions_lock);
+                            //whiteboard_log_debug("QUERY FOR SUBS: Set subscription %s to ongoing\n", s->sub_id); /* SUB_DEBUG */
+                    }
+                    else if (s->status == M3_SUB_STOPPED)
+                    {
+                            g_mutex_unlock(p->subscriptions_lock);
+                            //printf("cleaning submodels\n");
+                            librdf_free_model(op->rsp->submodel);
+                            librdf_free_storage(op->rsp->substorage);
+                    }
+                }
 
 
 		/////////////////////////////
@@ -2759,29 +2787,52 @@ void rdf_subscribe(scheduler_item* op, sib_data_structure* p)
 		//Trigger for unsubs
 
 		////////////////////////////////////////////////////////
-		subscription_state* s;
-		g_mutex_lock(p->subscriptions_lock);
-		s = g_hash_table_lookup(p->subs, op->rsp->sub_id);
-		if (NULL != s && s->status == M3_SUB_STOPPED)
-		{
-			g_mutex_unlock(p->subscriptions_lock);
+                if (op->header->tr_type == M3_INNER_SUBSCRIBE)
+                {
+                    g_mutex_lock(p->dataflow_inner_subs_lock);
+                    dataflow_subscr_state* subscr_state =
+                            g_hash_table_lookup(p->dataflow_inner_subs, op->rsp->sub_id);
+                    if (NULL != subscr_state && subscr_state->status == M3_SUB_STOPPED)
+                    {
+                            g_mutex_unlock(p->dataflow_inner_subs_lock);
 
-			////////////////////////////////////////
-			//printf("cleaning submodels\n");
-			librdf_free_model(op->rsp->submodel);
-			librdf_free_storage(op->rsp->substorage);
+                            librdf_free_model(op->rsp->submodel);
+                            librdf_free_storage(op->rsp->substorage);
 
-			/////////////////////////////
-			op->op_complete = TRUE;
-			g_cond_signal(op->op_cond);
-			/////////////////////////////
-		}
-		else //SUB still active, the persistent query (emulated) will be auto-recharged
-		{
-			g_mutex_unlock(p->subscriptions_lock);
-			g_async_queue_push(p->query_queue, op);
-		}
+                            op->op_complete = TRUE;
+                            g_cond_signal(op->op_cond);
+                    }
+                    else //SUB still active, the persistent query (emulated) will be auto-recharged
+                    {
+                            g_mutex_unlock(p->dataflow_inner_subs_lock);
+                            g_async_queue_push(p->query_queue, op);
+                    }
+                }
+                else
+                {
+                    subscription_state* s;
+                    g_mutex_lock(p->subscriptions_lock);
+                    s = g_hash_table_lookup(p->subs, op->rsp->sub_id);
+                    if (NULL != s && s->status == M3_SUB_STOPPED)
+                    {
+                            g_mutex_unlock(p->subscriptions_lock);
 
+                            ////////////////////////////////////////
+                            //printf("cleaning submodels\n");
+                            librdf_free_model(op->rsp->submodel);
+                            librdf_free_storage(op->rsp->substorage);
+
+                            /////////////////////////////
+                            op->op_complete = TRUE;
+                            g_cond_signal(op->op_cond);
+                            /////////////////////////////
+                    }
+                    else //SUB still active, the persistent query (emulated) will be auto-recharged
+                    {
+                            g_mutex_unlock(p->subscriptions_lock);
+                            g_async_queue_push(p->query_queue, op);
+                    }
+                }
 		////////////////////////////////////////////////////////
 	}
 
@@ -2897,7 +2948,7 @@ void do_query_subscribe(gpointer op_param, gpointer p_param)
 	switch (op->header->tr_type)
 	{
 	/* Query and subscribe handled similarly at this level (for now) */
-	case M3_SUBSCRIBE:
+	case M3_SUBSCRIBE: case M3_INNER_SUBSCRIBE:
 		if (op->rsp->first_subscribe)
 		{
 			//For the first subscribe a complete query is needed
@@ -2928,15 +2979,30 @@ void do_query_subscribe(gpointer op_param, gpointer p_param)
 
 			op->rsp->first_subscribe=FALSE;
 
-			subscription_state* s;
-			g_mutex_lock(p->subscriptions_lock);
-			s = g_hash_table_lookup(p->subs, op->rsp->sub_id);
-			if (NULL != s && s->status != M3_SUB_STOPPED)
-			{
-				s->status = M3_SUB_ONGOING;
-				whiteboard_log_debug("QUERY FOR FIRST SUBS: Set subscription %s to ongoing\n", s->sub_id); /* SUB_DEBUG */
-			}
-			g_mutex_unlock(p->subscriptions_lock);
+                        if (op->header->tr_type == M3_INNER_SUBSCRIBE)
+                        {
+                            g_mutex_lock(p->dataflow_inner_subs_lock);
+                            dataflow_subscr_state* subscr_state =
+                                    g_hash_table_lookup(p->dataflow_inner_subs, op->rsp->sub_id);
+                            if (NULL != subscr_state && subscr_state->status != M3_SUB_STOPPED)
+                            {
+                                subscr_state->status = M3_SUB_ONGOING;
+                            }
+                            g_mutex_unlock(p->dataflow_inner_subs_lock);
+                        }
+                        else
+                        {
+                            subscription_state* s;
+                            g_mutex_lock(p->subscriptions_lock);
+                            s = g_hash_table_lookup(p->subs, op->rsp->sub_id);
+                            if (NULL != s && s->status != M3_SUB_STOPPED)
+                            {
+                                s->status = M3_SUB_ONGOING;
+                                //whiteboard_log_debug("QUERY FOR FIRST SUBS: Set subscription %s to ongoing\n", s->sub_id); /* SUB_DEBUG */
+                            }
+
+                            g_mutex_unlock(p->subscriptions_lock);
+                        }
 
 			/////////////////////////////
 			op->op_complete = TRUE;
@@ -3059,6 +3125,7 @@ gpointer scheduler(gpointer data)
 
 	GHashTable* subs = p->subs;
 	GMutex* subscriptions_lock = p->subscriptions_lock;
+        GHashTable* inner_subs = p->dataflow_inner_subs;
 
 
 	gboolean updated = false;
@@ -3109,6 +3176,7 @@ gpointer scheduler(gpointer data)
 
 			i_list = g_slist_prepend(i_list, op);
 			whiteboard_log_debug("Added item to insert list");
+                        dataflow_try_to_add_agent(p, op->req->insert_graph, op->header->kp_id);
 		}
 		g_async_queue_unlock(i_queue);
 
@@ -3138,6 +3206,9 @@ gpointer scheduler(gpointer data)
 			g_mutex_lock(subscriptions_lock);
 			g_hash_table_foreach(subs, set_sub_to_pending, NULL);
 			g_mutex_unlock(subscriptions_lock);
+                        g_mutex_lock(p->dataflow_inner_subs_lock);
+                        g_hash_table_foreach(inner_subs, dataflow_set_inner_subscr_to_pending, NULL);
+                        g_mutex_unlock(p->dataflow_inner_subs_lock);
 			updated = false;
 			//whiteboard_log_debug("RDF store updated, set all subscriptions to pending\n"); /* SUB_DEBUG */
 		}
@@ -3190,6 +3261,9 @@ sib_data_structure* sib_initialize(gchar* name, gpointer parameter_list)
 
 	sd = g_new0(sib_data_structure, 1);
 	if (NULL == sd) exit(-1);
+
+        /* Dataflow network data initialization. */
+        dataflow_initialize_variables(sd);
 
 	/* Initialize smart space name */
 	sd->ss_name = name;
@@ -3323,6 +3397,8 @@ sib_data_structure* sib_initialize(gchar* name, gpointer parameter_list)
 
 	if (NULL == sd->new_reqs_cond) exit(-1);
 	if (NULL == sd->RDF_model) exit(-1);
+
+        dataflow_run_network_operation(sd);
 
 	return sd;
 }
