@@ -835,16 +835,16 @@ static DBusHandlerResult dbushandler_kp_message(DBusHandler* self,
 
       whiteboard_log_debug("Got QUERY\n");
 
-      /* DBus message unreferenced in m3_query */
+      /* DBus message unreferenced in m3_query_spql_upd */
       dbus_message_ref(msg);
 
       p->msg = msg;
       p->conn = conn;
       p->sib = self->sib_data;
-      p->operation = M3_QUERY;
+      p->operation = M3_QUERY_SPQL_UPD;
       g_thread_pool_push(self->threadpool, p, &gerror);
       
-      //g_thread_create(m3_query, p, FALSE, &gerror);
+      //g_thread_create(m3_query_spql_upd, p, FALSE, &gerror);
       if (gerror)
 	{
 	  printf("Error creating thread: %s\n", gerror->message);
@@ -929,8 +929,8 @@ static void kp_handler(gpointer data, gpointer userdata)
     case M3_UPDATE:
       m3_update(op);
       break;
-    case M3_QUERY:
-      m3_query(op);
+    case M3_QUERY_SPQL_UPD:
+      m3_query_spql_upd(op);
       break;
     case M3_SUBSCRIBE:
       m3_subscribe(op);

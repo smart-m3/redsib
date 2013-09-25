@@ -4,6 +4,7 @@
 #include <sibdefs.h>
 #include <reasoning.h>
 #include "sib_operations.h"
+#include "core_utilities.h"
 
 //RDF DEFINE
 #define wildcard1 	"sib:any"
@@ -213,6 +214,7 @@ gchar* control_string_expand(ssElement_t content)
 
 }
 
+
 ///////////////////////////////////////////// Reasoning////////////////////////////////////////////////
 
 void reasoning(sib_data_structure* param, ssTriple_t* t, gboolean* enable_real_reasoning)
@@ -234,7 +236,8 @@ void reasoning(sib_data_structure* param, ssTriple_t* t, gboolean* enable_real_r
 	    librdf_model_add_statement(param->RDF_model, statement);
 
 	    //FOR SUBSCRIBE
-            librdf_model_add_statement(param->RDF_model_insert, statement);
+	    statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 
 	    librdf_free_statement(statement);
 
@@ -261,7 +264,8 @@ void reasoning(sib_data_structure* param, ssTriple_t* t, gboolean* enable_real_r
 	    librdf_model_add_statement(param->RDF_model, statement);
 
 	    //FOR SUBSCRIBE
-            librdf_model_add_statement(param->RDF_model_insert, statement);
+	    statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 
 	    librdf_free_statement(statement);
 
@@ -276,7 +280,8 @@ void reasoning(sib_data_structure* param, ssTriple_t* t, gboolean* enable_real_r
 	    librdf_model_add_statement(param->RDF_model, statement);
 
 	    //FOR SUBSCRIBE
-            librdf_model_add_statement(param->RDF_model_insert, statement);
+	    statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 
 	    librdf_free_statement(statement);
 
@@ -303,7 +308,8 @@ void reasoning(sib_data_structure* param, ssTriple_t* t, gboolean* enable_real_r
 	    librdf_model_add_statement(param->RDF_model, statement);
 
 	    //FOR SUBSCRIBE
-            librdf_model_add_statement(param->RDF_model_insert, statement);
+	    statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 	    librdf_free_statement(statement);
 	    
 
@@ -318,7 +324,8 @@ void reasoning(sib_data_structure* param, ssTriple_t* t, gboolean* enable_real_r
 	    librdf_model_add_statement(param->RDF_model, statement);
 
 	    //FOR SUBSCRIBE
-            librdf_model_add_statement(param->RDF_model_insert, statement);
+        statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 
 	    librdf_free_statement(statement);
 
@@ -344,7 +351,8 @@ void reasoning(sib_data_structure* param, ssTriple_t* t, gboolean* enable_real_r
 
 	    librdf_model_add_statement(param->RDF_model, statement);
 	    //FOR SUBSCRIBE
-            librdf_model_add_statement(param->RDF_model_insert, statement);
+        statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 	    librdf_free_statement(statement);
 
 	 
@@ -358,7 +366,8 @@ void reasoning(sib_data_structure* param, ssTriple_t* t, gboolean* enable_real_r
 
 	    librdf_model_add_statement(param->RDF_model, statement);
 	    //FOR SUBSCRIBE
-            librdf_model_add_statement(param->RDF_model_insert, statement);
+        statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 	    librdf_free_statement(statement);
 
 	    //////////////////////////////////////////////////////////////////////////////////////
@@ -382,7 +391,8 @@ void reasoning(sib_data_structure* param, ssTriple_t* t, gboolean* enable_real_r
 
 	    librdf_model_add_statement(param->RDF_model, statement);
 	    //FOR SUBSCRIBE
-            librdf_model_add_statement(param->RDF_model_insert, statement);
+        statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 	    librdf_free_statement(statement);
 
 
@@ -398,7 +408,8 @@ void reasoning(sib_data_structure* param, ssTriple_t* t, gboolean* enable_real_r
 
 	    librdf_model_add_statement(param->RDF_model, statement);
 	    //FOR SUBSCRIBE
-            librdf_model_add_statement(param->RDF_model_insert, statement);
+        statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 	    librdf_free_statement(statement);
 
 
@@ -428,7 +439,8 @@ void reasoning(sib_data_structure* param, ssTriple_t* t, gboolean* enable_real_r
 
 		librdf_model_add_statement(param->RDF_model, statement);
 		//FOR SUBSCRIBE
-		librdf_model_add_statement(param->RDF_model_insert, statement);
+        statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 
 		librdf_free_statement(statement);
 
@@ -506,7 +518,8 @@ void check_subtype_and_add(sib_data_structure* param, gchar* uri, gchar* class_o
 			librdf_model_add_statement(param->RDF_model, statement);
 
 			//FOR SUBSCRIBE
-			librdf_model_add_statement(param->RDF_model_insert, statement);
+	        statement_in_tl(&(param->RDF_list_insert),statement);
+	        //librdf_model_add_statement(param->RDF_model_insert, statement);
 			librdf_free_statement(statement);
 
 			//RECOURSIVE
@@ -578,7 +591,8 @@ void check_if_predicate_subproperty_and_add(sib_data_structure* param, gchar* ur
 			librdf_model_add_statement(param->RDF_model, statement);
 
 			//FOR SUBSCRIBE
-			librdf_model_add_statement(param->RDF_model_insert, statement);
+	        statement_in_tl(&(param->RDF_list_insert),statement);
+	        //librdf_model_add_statement(param->RDF_model_insert, statement);
 			librdf_free_statement(statement);
 
 			//RECOURSIVE
@@ -627,7 +641,8 @@ void check_if_property_in_domain_and_add_subject_type(sib_data_structure* param,
 		librdf_model_add_statement(param->RDF_model, statement);
 
 		//FOR SUBSCRIBE
-		librdf_model_add_statement(param->RDF_model_insert, statement);
+        statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 		librdf_free_statement(statement);
 
 		//////////////////////////////////////////////
@@ -656,7 +671,8 @@ void check_if_property_in_range_and_add_object_type(sib_data_structure* param, g
 		librdf_model_add_statement(param->RDF_model, statement);
 
 		//FOR SUBSCRIBE
-		librdf_model_add_statement(param->RDF_model_insert, statement);
+        statement_in_tl(&(param->RDF_list_insert),statement);
+        //librdf_model_add_statement(param->RDF_model_insert, statement);
 		librdf_free_statement(statement);
 
 		//////////////////////////////////////////////
@@ -665,4 +681,5 @@ void check_if_property_in_range_and_add_object_type(sib_data_structure* param, g
 
 	}
 }
+
 
