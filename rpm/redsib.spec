@@ -8,11 +8,17 @@ URL: https://github.com/smart-m3/
 Source0: redsib-1.0.tar.bz2
 BuildRoot: %{_tmppath}/redsib-root
 
-BuildRequires: raptor
-BuildRequires: redland
 BuildRequires: libwhiteboard >= 1.0
 BuildRequires: whiteboard >= 1.0
 BuildRequires: whiteboard-sib-access >= 1.0
+
+AutoReq: no
+Requires: raptor2
+Requires: rasqal
+Requires: redland
+Requires: libwhiteboard >= 1.0
+Requires: whiteboard >= 1.0
+Requires: whiteboard-sib-access >= 1.0
 
 %description
 
