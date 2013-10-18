@@ -23,8 +23,9 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
-config.status: configure
+config.status:
 	dh_testdir
+	./autogen.sh
 	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) \
 				       --build=$(DEB_BUILD_GNU_TYPE) \
 				       --prefix=/usr \
