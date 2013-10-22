@@ -7,5 +7,5 @@ Standards-Version: 0.4.1
 
 Package: redsibd
 Architecture: any
-Depends: libwhiteboard (>= 2.3 ), libwhiteboard-dev (>= 2.3 ), whiteboard (>= 2.0), whiteboard-sib-access (>= 2.0), libraptor2-0, librasqal3
+Depends: libwhiteboard (>= 2.3 ), libwhiteboard-dev (>= 2.3 ), whiteboard (>= 2.0), whiteboard-sib-access (>= 2.0), libraptor2-0, librasqal3, librdf0
 Description: Redland SIB daemon.
