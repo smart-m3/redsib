@@ -57,8 +57,8 @@
 #include "sib_operations.h"
 
 #define MAJOR_VERSION 	"0"
-#define MINOR_VERSION 	"4"
-#define BUILD 		"1"
+#define MINOR_VERSION 	"9"
+#define BUILD 		"0"
 
 GMainLoop *mainloop = NULL;
 SibControl *sib_control  = NULL;
@@ -89,14 +89,13 @@ int main(int argc, char **argv)
 
 	  /*AD-ARCES*/
 	  printf("/* * * * * * * * * * * * * * * * * * * * * *\\\n");
-	  printf("           RedSib, version %s.%s.%s\n", MAJOR_VERSION, MINOR_VERSION, BUILD);
+	  printf("       Smart-M3 RedSib, version %s.%s.%s\n", MAJOR_VERSION, MINOR_VERSION, BUILD);
 	  printf("     Developed by University of Bologna \n");
 	  printf("\\* * * * * * * * * * * * * * * * * * * * * */\n\n");
 
 
 
 
-  //mtrace();
   gchar* ss_name;
   gchar *dbus_path=NULL;
   whiteboard_log_debug("SIB version %s.%s.%s\n", MAJOR_VERSION, MINOR_VERSION, BUILD);
@@ -125,14 +124,35 @@ int main(int argc, char **argv)
 			else
 			{
 				printf("\nUSAGE:\n\n");
-				printf("./redsibd4 [--option1] [--option2] [--option..] [ss_name]\n");
-				printf("\n\nOPTIONS AVALIABLE:\n\n");
-				printf("--enable-rdf++			Enable RDF++ Reasoning Plugin\n\n");
-				printf("--disable-protections		Disable protections ARCES plugin\n\n");
-				printf("--storage-volatile  / --ram	Disable persistent BDB and run on volatile\n");
-				printf("--storage-sqlite		Use Sqlite as storage db (slow..)\n");
-				printf("--storage-subs-persistent	Use persistent BDB for handling subscriptions\n"); 				        printf("                                (just in case subscriptions work with high number of statements)\n\n");
+				printf("./redsibd [--option1] [--option2] [--option..] [ss_name]\n");
+				printf("\n\nOPTIONS AVALIABLE:\n\n\n");
+				printf("Plugin Options:\n\n");
+				printf("  --enable-rdf++\t\t\tEnable RDF++ Reasoning Plugin\n");
+				printf("  --enable-protections	\t\tEnable write protections Plugin\n");
+                printf("\n\n");
+                printf("Main Triplestore Options:\n\n");
+				printf("  --storage-volatile, --ram	\tMain triplestore runs volatile\n");
+                printf("  --storage-volatile-hash, --ram-hash\tMain triplestore runs on volatile Hash BDB\n");
+				printf("  --storage-sqlite\t\t\tUse Sqlite as triplestore storage (slow)\n");
+				printf("  --storage-virtuoso\t\t\tUse Virtuoso as triplestore storage (guided)\n");
+				printf("  --storage-virtuoso-p==PARAMS\t\tUse Virtuoso as triplestore storage with parameters\n");
+				printf("\t\t   e.g. PARAMS : \"dsn='VOS', host='127.0.0.1', user='dba',password='PASS'\"\n");
+				printf("\n\n");
+                printf("Subscriptions Triplestore Storages Options (default non persistent):\n\n");
+                printf("  --subs-hash \t\t\t\tUse non persistent Hash BDB \n");
+				printf("  --subs-persistent	\t\tUse persistent Hash BDB \n");
+				printf("                                        (when subscriptions hold a huge number of statements)\n");
+				printf("\n\n");
+                printf("Multi-thread Sparql Accelerator Options:\n\n");
+                printf("  --threads=<int>, inf\t\t\tSet maximum number of additional threads active per time\n");
+                printf("\t\t\t\t\twhen subscriptions are triggered\n");
+                printf("\t\t\t\t\t(=0 : SPARQL accelerator runs completely sequential)\n");
+                printf("\t\t\t\t\t(DEFAULT=inf : SPARQL accelerator has no threads limit)\n");
+				printf("\n\n");
+                printf("Debug Options:\n\n");
+                printf("  --debug-latency\t\t\tSave internal operations latencies\n");
 
+				printf("\n\n\n");
 				return 0;
 			}
 		}
@@ -141,7 +161,7 @@ int main(int argc, char **argv)
 			if (!name_inserted)
 			{			
 				//SS name
-				printf ("SS name set from parameters: %s\n",argv[i-1]);
+				printf ("SS name: %s\n",argv[i-1]);
 	  			ss_name = g_strdup(argv[i-1]);
 				name_inserted= TRUE;
 			}
@@ -150,8 +170,8 @@ int main(int argc, char **argv)
 	}
      if (!name_inserted)
 	{
-		printf ("SS name: default\n");
-		ss_name = g_strdup("X");
+        ss_name = g_strdup("X");
+		printf ("SS name: %s\n", ss_name );
 	}
 	
   }
